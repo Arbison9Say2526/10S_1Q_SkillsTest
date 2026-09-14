@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CHAGEE Receipt Generator</title>
+  
+  <!-- PyScript Core -->
+  <link rel="stylesheet" href="https://pyscript.net/releases/2024.1.1/core.css" />
+  <script type="module" src="https://pyscript.net/releases/2024.1.1/core.js"></script>
+
+  <style>
+    :root {
+      --chagee-navy: #0A1E3F;
+      --chagee-gold: #C5A059;
+      --chagee-bg: #F9F7F2;
+      --chagee-card: #FFFFFF;
+      --chagee-text: #222222;
+      --chagee-gray: #E8E4D9;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Georgia', 'Times New Roman', serif;
+    }
+
+    /* Outer Wrapper */
+    .chagee-wrapper {
+      width: 100%;
+      max-width: 450px;
+      background-color: var(--chagee-card);
+      border: 1px solid var(--chagee-gray);
+      border-radius: 6px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+      overflow: hidden;
+    }
+
+    /* Header Banner */
+    .chagee-banner {
+      background-color: var(--chagee-navy);
+      color: var(--chagee-gold);
+      text-align: center;
+      padding: 24px 16px;
+      border-bottom: 2px solid var(--chagee-gold);
+    }
+
+    .brand-title {
+      font-size: 26px;
+      letter-spacing: 4px;
+      font-weight: bold;
+    }
+
+    .brand-subtitle {
+      font-size: 10px;
+      letter-spacing: 2px;
+      color: #FFFFFF;
+      margin-top: 4px;
+      text-transform: uppercase;
+    }
+
+    /* Content Area */
+    .chagee-content {
+      padding: 20px;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--chagee-navy);
+      font-weight: bold;
+      margin-bottom: 14px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--chagee-gray);
+    }
+
+    .currency-tag {
+      color: var(--chagee-gold);
+    }
+
+    /* Menu List */
+    .menu-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .item-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 14px;
+      background-color: var(--chagee-bg);
+      border: 1px solid var(--chagee-gray);
+      border-radius: 4px;
+      transition: border-color 0.2s ease;
+    }
+
+    .item-card:hover {
+      border-color: var(--chagee-gold);
+    }
+
+    /* Button */
+    .action-bar {
+      margin-bottom: 20px;
+    }
+
+    .action-btn {
+      width: 100%;
+      padding: 12px;
+      background-color: var(--chagee-navy);
+      color: var(--chagee-gold);
+      border: 1px solid var(--chagee-gold);
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: bold;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: opacity 0.2s ease;
+    }
+
+    .action-btn:hover {
+      opacity: 0.9;
+    }
+
+    /* Receipt Section */
+    .receipt-card {
+      background-color: #FAF8F5;
+      border: 1px dashed var(--chagee-gold);
+      padding: 18px;
+      border-radius: 4px;
+    }
+
+    .receipt-top {
+      text-align: center;
+    }
+
+    .receipt-brand {
+      font-size: 13px;
+      font-weight: bold;
+      letter-spacing: 1.5px;
+      color: var(--chagee-navy);
+    }
+
+    .receipt-date {
+      font-size: 10px;
+      color: #777777;
+      margin-top: 2px;
+    }
+
+    .receipt-divider {
+      border-bottom: 1px dashed var(--chagee-gray);
+      margin: 12px 0;
+    }
+
+    .receipt-items-output {
+      min-height: 20px;
+      font-size: 12px;
+      color: var(--chagee-text);
+    }
+
+    /* Receipt Totals */
+    .receipt-totals {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .total-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--chagee-text);
+    }
+
+    .total-row.grand-total {
+      font-size: 14px;
+      font-weight: bold;
+      color: var(--chagee-navy);
+      border-top: 1px solid var(--chagee-gray);
+      padding-top: 8px;
+      margin-top: 4px;
+    }
+
+    .receipt-bottom-text {
+      text-align: center;
+      font-size: 10px;
+      font-style: italic;
+      color: var(--chagee-gold);
+      margin-top: 14px;
+    }
+    body {
+  background-color: #d4dfff; 
+  color: var(--chagee-text);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+}
+  </style>
+</head>
+<body>
+
+  <div class="chagee-wrapper">
+    <!-- Header Banner -->
+    <div class="chagee-banner">
+      <div class="brand-title">CHAGEE</div>
+      <div class="brand-subtitle">PREMIUM MILK TEA</div>
+    </div>
+
+    <!-- Content Container -->
+    <div class="chagee-content">
+      <div class="section-header">
+        <span>Menu Items</span>
+        <span class="currency-tag">PHP (₱)</span>
+      </div>
+
+      <!-- Checkbox Items Container -->
+      <div class="menu-list" id="menuList">
+        <div class="item-card">
+         <input id="DHP" type="checkbox" value="129">Da Hong Pao Milk Tea
+         <h2>₱129.00</h2>
+        </div>
+        <div class="item-card">
+          <input id="POT" type="checkbox" value="125">Peach Oolong Tea
+          <h2>₱125.00</h2>
+        </div>
+        <div class="item-card">
+          <input id="GMT" type="checkbox" value="119">BO·YA Jasmine Green Milk Tea
+          <h2>₱119.00</h2>
+        </div>
+        <div class="item-card">
+          <input id="OOM" type="checkbox" value="149">Osmanthus Oolong Milk Tea
+          <h2>₱149.00</h2>
+        </div>
+      </div>
+
+        
+        <div class="section-header" style="margin-top: 24px;">
+        <span>Fresh Teas & Citrus</span>
+        <span class="currency-tag">PHP (₱)</span>
+        </div>
+
+
+        <div class="menu-list" id="freshTeaList">
+        
+         <div class="item-card">
+          <input id="DCT" type="checkbox" value="135">Da Hong Pao Crushed Lemon Tea
+           <h2>₱135.00</h2>
+        </div>
+         <div class="item-card">
+          <input id="JBC" type="checkbox" value="125">Jasmine Blossom Citrus Tea
+          <h2>₱125.00</h2>
+        </div>
+
+        </div>
+
+      
+      <div class="action-bar">
+        <button type="button" class="action-btn" id="order" py-click="order">Calculate Total</button>
+      </div>
+
+      
+      <div class="receipt-card" id="receiptContainer">
+        <div class="receipt-top">
+          <div class="receipt-brand">CHAGEE RECEIPT</div>
+          <div class="receipt-date">Official Breakdown</div>
+        </div>
+
+        <div id="receiptItems"></div>
+
+  <div class="receipt-divider"></div>
+
+  <p>Subtotal: ₱<span id="subtotal">0.00</span></p>
+  <p>VAT (12%): ₱<span id="vat">0.00</span></p>
+  <p>Total: ₱<span id="total">0.00</span></p>
+</div>
+
+        <div class="receipt-bottom-text">
+          <span>Thank you for your order</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="py" src="main.py"></script>
+</body>
+</html>
